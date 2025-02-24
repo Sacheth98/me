@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sacheth Reddy Pinnapureddy - Online Resume</title>
     <link rel="stylesheet" href="css/style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
@@ -78,5 +81,39 @@
         <p>LinkedIn: <a href="https://www.linkedin.com/in/sacheth-reddy/">linkedin.com/in/sacheth-reddy</a></p>
         <p>GitHub: <a href="https://github.com/sacheth">github.com/sacheth</a></p>
     </section>
+
+<script>
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section').forEach((section) => {
+        observer.observe(section);
+    });
+
+    // Create animated background particles
+    function createParticles() {
+        const particles = 50;
+        for (let i = 0; i < particles; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'background-particle';
+            particle.style.cssText = `
+                left: ${Math.random() * 100}%;
+                width: ${Math.random() * 4}px;
+                height: ${Math.random() * 4}px;
+                background: rgba(0,255,157,${Math.random() * 0.5});
+                animation: particle-move ${10 + Math.random() * 20}s linear infinite;
+                border-radius: 50%;
+            `;
+            document.body.appendChild(particle);
+        }
+    }
+    createParticles();
+</script>
 </body>
 </html>
