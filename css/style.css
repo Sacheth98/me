@@ -5,48 +5,64 @@ body {
     padding: 0;
     background-color: #f4f4f4;
     color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 header {
-    background-color: #333;
-    color: white;
-    padding: 20px;
+    background-color: #f4f4f4;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    height: 100vh;
+    box-sizing: border-box;
+    padding: 50px;
 }
 
 .profile-pic {
-    width: 250px; /* Large presence */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 10px; /* Slight rounded corners */
-    border: 5px solid #444; /* Border */
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); /* Shadow */
+    width: 50%; /* Takes half of the screen */
+    height: 100vh; /* Full height */
+    object-fit: cover; /* Ensures the image fills the area */
+    border-radius: 0; /* No rounded corners */
 }
 
 .header-text {
-    text-align: right;
-    flex-grow: 1;
-    padding-left: 20px;
+    width: 50%; /* Takes the other half */
+    text-align: left;
+    padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 h1 {
     margin: 0;
-    font-size: 2em;
+    font-size: 3em;
 }
 
 p {
-    margin: 5px 0;
+    margin: 10px 0;
+    font-size: 1.5em;
+}
+
+button {
+    padding: 10px 20px;
     font-size: 1.2em;
+    margin-top: 20px;
+    border: none;
+    background-color: black;
+    color: white;
+    cursor: pointer;
 }
 
 section {
     background: white;
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 800px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    margin: 0;
+    padding: 40px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 ul {
