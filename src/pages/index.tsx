@@ -7,20 +7,42 @@ import ThreeScene from "../components/ThreeScene";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function HomePage() {
-  const sectionRefs = useRef<HTMLElement[]>([]);
-  const q = gsap.utils.selector(sectionRefs);
+  // Use a single ref for all sections
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const q = gsap.utils.selector(containerRef);
+
+      gsap.fromTo(
+        q(".experience-item"),
+        { opacity: 0, y: 10 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 80%",
+          },
+        }
+      );
+    }
+  }, []);
+
   const experience = [
     {
       company: "Sr. DevOps / Site Reliability Engineer - WIS International",
       period: "Apr 2023 – Present",
       points: [
-        "Architected and deployed scalable cloud infrastructures on Microsoft Azure",
-        "Implemented Azure Key Vault for enhanced security",
-        "Directed CI/CD pipelines using Azure DevOps",
-        "Integrated Azure Active Directory (AD) for optimized identity management",
+        "Architected scalable cloud infrastructures on Microsoft Azure.",
+        "Implemented Azure Key Vault for enhanced security.",
+        "Directed CI/CD pipelines using Azure DevOps.",
+        "Integrated Azure Active Directory (AD) for optimized identity management.",
       ],
     },
-    // Add other experiences similarly
   ];
 
   const skills = [
@@ -30,73 +52,42 @@ export default function HomePage() {
     "Networking: VPN, SSH, DNS, Security Groups",
   ];
 
-  useEffect(() => {
-    // GSAP Animations
-    gsap.from(sectionRefs.current, {
-      opacity: 0,
-      y: 100,
-      stagger: 0.2,
-      scrollTrigger: {
-        trigger: sectionRefs.current,
-        start: "top 80%",
-      },
-    });
-
-    // Hover effects for experience items
-    gsap.to(q(".experience-item"), {
-      y: -5,
-      duration: 0.3,
-      ease: "power2.out",
-      stagger: 0.1,
-      scrollTrigger: {
-        trigger: ".experience-item",
-        start: "top 90%",
-      },
-    });
-  }, [q]);
+  const certifications = [
+    "AWS Certified Solutions Architect",
+    "AWS Certified SysOps Administrator",
+    "AWS Certified Developer",
+    "Google Certified Cloud Engineer",
+  ];
 
   return (
-    <div className="container">
+    <div ref={containerRef} className="container">
       <ThreeScene />
 
-      <motion.header
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.5, ease: "circOut" }}
-        className="hero-section"
-      >
+      <motion.header className="hero-section">
         <motion.img
-          src="/images/image.jpeg"
-          alt="Profile"
+          src="/images/image.jpg"
           className="profile-image"
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.5, type: "spring" }}
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
         />
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="cyber-glow"
-        >
-          Sacheth Reddy Pinnapureddy
-        </motion.h1>
-        <motion.p
-          className="typewriter"
-          initial={{ width: 0 }}
-          animate={{ width: "100%" }}
-          transition={{ duration: 2, delay: 1.2, ease: "circOut" }}
-        >
-          DevOps Engineer | Cloud | Kubernetes
-        </motion.p>
+
+        <div className="hero-content">
+          <motion.h1 className="cyber-glow">
+            Sacheth Reddy Pinnapureddy
+          </motion.h1>
+
+          <motion.p className="typewriter">
+            3X AWS, GCP | Ex Amazon | DevOps | SRE
+          </motion.p>
+
+          {/* Add any other header content here */}
+        </div>
       </motion.header>
 
       <main>
         {/* About Section */}
-        <section
-          ref={(el) => el && sectionRefs.current.push(el)}
-          className="content-section"
-        >
+        <section className="content-section">
           <h2 className="section-title">About Me</h2>
           <motion.p className="section-text" whileHover={{ x: 10 }}>
             Certified AWS Solutions Architect, SysOps Administrator, and Google
@@ -107,10 +98,7 @@ export default function HomePage() {
         </section>
 
         {/* Experience Section */}
-        <section
-          ref={(el) => el && sectionRefs.current.push(el)}
-          className="content-section"
-        >
+        <section className="content-section">
           <h2 className="section-title">Experience</h2>
           {experience.map((exp, index) => (
             <motion.div
@@ -136,10 +124,7 @@ export default function HomePage() {
         </section>
 
         {/* Skills Section */}
-        <section
-          ref={(el) => el && sectionRefs.current.push(el)}
-          className="content-section"
-        >
+        <section className="content-section">
           <h2 className="section-title">Skills</h2>
           <div className="skills-grid">
             {skills.map((skill, index) => (
@@ -158,18 +143,10 @@ export default function HomePage() {
         </section>
 
         {/* Certifications Section */}
-        <section
-          ref={(el) => el && sectionRefs.current.push(el)}
-          className="content-section"
-        >
+        <section className="content-section">
           <h2 className="section-title">Certifications</h2>
           <motion.ul className="certifications-list">
-            {[
-              "AWS Certified Solutions Architect",
-              "AWS Certified SysOps Administrator",
-              "AWS Certified Developer",
-              "Google Certified Cloud Engineer",
-            ].map((cert, index) => (
+            {certifications.map((cert, index) => (
               <motion.li
                 key={index}
                 className="certification-item"
@@ -182,10 +159,7 @@ export default function HomePage() {
         </section>
 
         {/* Contact Section */}
-        <section
-          ref={(el) => el && sectionRefs.current.push(el)}
-          className="content-section"
-        >
+        <section className="content-section">
           <h2 className="section-title">Contact</h2>
           <motion.div
             className="contact-links"

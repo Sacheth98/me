@@ -4,17 +4,23 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next export",
-    "deploy": "gh-pages -d out"
+    "start": "next start",
+    "export": "next export"
   },
   "dependencies": {
-    "@react-three/fiber": "^8.0.27",
-    "@tensorflow/tfjs": "^3.18.0",
-    "framer-motion": "^6.3.11",
-    "gsap": "^3.10.4",
-    "next": "^15.1.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "three": "^0.150.1"
+    "@react-three/drei": "9.57.0",
+    "@react-three/fiber": "8.16.0",
+    "framer-motion": "^12.4.7",
+    "gsap": "^3.12.7",
+    "next": "13.4.19",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "three": "0.155.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.17.17",
+    "@types/react": "18.2.21",
+    "@types/react-dom": "18.2.7",
+    "typescript": "5.1.6"
   }
 }
