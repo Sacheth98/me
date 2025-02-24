@@ -12,7 +12,7 @@
     "@tensorflow/tfjs": "^3.18.0",
     "framer-motion": "^6.3.11",
     "gsap": "^3.10.4",
-    "next": "^13.4.2",
+    "next": "^15.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.150.1"
