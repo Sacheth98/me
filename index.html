@@ -113,48 +113,53 @@
         });
     };
 
-    // Advanced Particle System
-    class ParticleSystem {
-        constructor(count = 100) {
-            this.particles = [];
-            this.container = document.createElement('div');
-            this.container.className = 'particle-container';
-            document.body.appendChild(this.container);
-            this.init(count);
-        }
-
-        init(count) {
-            for (let i = 0; i < count; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                Object.assign(particle.style, {
-                    '--x': Math.random(),
-                    '--y': Math.random(),
-                    '--duration': `${10 + Math.random() * 20}s`,
-                    '--size': `${Math.random() * 4}px`,
-                    '--opacity': Math.random() * 0.5
-                });
-                this.particles.push(particle);
-                this.container.appendChild(particle);
-            }
-        }
+class ParticleSystem {
+    constructor(count = 100) {
+        this.particles = [];
+        this.container = document.createElement('div');
+        this.container.className = 'particle-container';
+        document.body.appendChild(this.container);
+        this.init(count);
     }
 
-    // Mouse Interaction Effects
-    const initMouseEffects = () => {
-        document.addEventListener('mousemove', (e) => {
-            const particles = document.querySelectorAll('.particle');
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            particles.forEach(particle => {
-                particle.style.transform = `translate(
-                    ${(x - 0.5) * 50}px,
-                    ${(y - 0.5) * 50}px
-                )`;
+    init(count) {
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            const x = Math.random();
+            const y = Math.random();
+            particle.style.left = `${x * 100}%`;
+            particle.style.top = `${y * 100}%`;
+            particle.dataset.leftPercent = x * 100;
+            particle.dataset.topPercent = y * 100;
+            Object.assign(particle.style, {
+                '--duration': `${10 + Math.random() * 20}s`,
+                '--size': `${Math.random() * 4}px`,
+                '--opacity': Math.random() * 0.5
             });
+            this.particles.push(particle);
+            this.container.appendChild(particle);
+        }
+    }
+}
+
+    // Mouse Interaction Effects
+const initMouseEffects = () => {
+    document.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        const particles = document.querySelectorAll('.particle');
+        particles.forEach(particle => {
+            const leftPercent = parseFloat(particle.dataset.leftPercent);
+            const topPercent = parseFloat(particle.dataset.topPercent);
+            const initialLeftPx = leftPercent / 100 * window.innerWidth;
+            const initialTopPx = topPercent / 100 * window.innerHeight;
+            const translationX = (mouseX - initialLeftPx) * 0.1;
+            const translationY = (mouseY - initialTopPx) * 0.1;
+            particle.style.transform = `translate(${translationX}px, ${translationY}px)`;
         });
-    };
+    });
+};
 
     // Initialize everything
     document.addEventListener('DOMContentLoaded', () => {
