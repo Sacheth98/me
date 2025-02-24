@@ -1,7 +1,7 @@
 // pages/_app.tsx
 import type { AppProps } from "next/app";
 import { motion } from "framer-motion";
-import ThreeScene from "../components/ThreeScene.tsx";
+import ThreeScene from "../components/ThreeScene";
 import "../../css/styles/global.css";
 
 function MyApp({ Component, pageProps, router }: AppProps) {
