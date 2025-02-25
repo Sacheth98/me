@@ -1,34 +1,36 @@
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ThreeScene from "../components/ThreeScene";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function HomePage() {
   // Use a single ref for all sections
+
   const containerRef = useRef(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const q = gsap.utils.selector(containerRef);
+      import("gsap/ScrollTrigger").then((module) => {
+        const ScrollTrigger = module.ScrollTrigger;
+        gsap.registerPlugin(ScrollTrigger);
 
-      gsap.fromTo(
-        q(".experience-item"),
-        { opacity: 0, y: 10 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 80%",
-          },
-        }
-      );
+        const q = gsap.utils.selector(containerRef);
+        gsap.fromTo(
+          q(".experience-item"),
+          { opacity: 0, y: 10 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 80%",
+            },
+          }
+        );
+      });
     }
   }, []);
 
