@@ -1,12 +1,15 @@
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
+import { useRouter } from "next/router";
 import ThreeScene from "../components/ThreeScene";
 
 export default function HomePage() {
   // Use a single ref for all sections
 
   const containerRef = useRef(null);
+  const { basePath } = useRouter();
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
