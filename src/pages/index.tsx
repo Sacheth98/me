@@ -1,14 +1,12 @@
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
-import { useRouter } from "next/router";
 import ThreeScene from "../components/ThreeScene";
 
 export default function HomePage() {
   // Use a single ref for all sections
 
   const containerRef = useRef(null);
-  const { basePath } = useRouter();
 
 
   useEffect(() => {
@@ -70,7 +68,7 @@ export default function HomePage() {
 
       <motion.header className="hero-section">
         <motion.img
-          src={`${basePath}/images/image.jpg`} 
+          src="me/images/image.jpg"
           className="profile-image"
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
