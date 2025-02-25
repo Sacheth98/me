@@ -23,7 +23,7 @@ jobs:
       - run: npm run build
       - run: npm run export
 
-      # Upload the exported static files from the "out" folder as an artifact
+      # Upload build files as an artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -31,17 +31,11 @@ jobs:
 
   deploy:
     needs: build
-
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-      
-    runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
