@@ -67,7 +67,7 @@ export default function HomePage() {
 
       <motion.header className="hero-section">
         <motion.img
-          src="/images/image.jpg"
+          src={`${basePath}/images/image.jpg`} 
           className="profile-image"
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
