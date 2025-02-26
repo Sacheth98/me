@@ -2,9 +2,12 @@ import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
 const ThreeScene = () => {
-  const mountRef = useRef(null);
+  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Only proceed if mountRef.current is not null
+    if (!mountRef.current) return;
+    
     // Scene setup
     const scene = new THREE.Scene();
     
@@ -159,7 +162,10 @@ const ThreeScene = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', onMouseMove);
-      mountRef.current?.removeChild(renderer.domElement);
+      // Check if mountRef.current exists before attempting to remove child
+      if (mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
     };
   }, []);
 
