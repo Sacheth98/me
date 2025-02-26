@@ -1,14 +1,14 @@
 // pages/_app.tsx
 import type { AppProps } from "next/app";
 import { motion } from "framer-motion";
-import ThreeScene from "../components/ThreeScene";
+import ThreeScene from "../components/common/ThreeScene";
 import "../../css/styles/global.css";
 
 function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <div className="app-container">
       {/* 3D Background Scene */}
-      <ThreeScene />
+      <ThreeScene isMobile={false} />
 
       {/* Page Content with Framer Motion transitions */}
       <motion.div
