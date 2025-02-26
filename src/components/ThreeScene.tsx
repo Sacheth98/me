@@ -65,24 +65,25 @@ const ThreeScene = () => {
     scene.add(particleSystem);
     
     // Add skill nodes - 3D representations of your key skills
-    const createSkillNode = (text, position, color) => {
-      const group = new THREE.Group();
-      
-      // Create a sphere for the node
-      const geometry = new THREE.SphereGeometry(0.2, 24, 24);
-      const material = new THREE.MeshBasicMaterial({ 
-        color: color,
-        transparent: true,
-        opacity: 0.7
-      });
-      const sphere = new THREE.Mesh(geometry, material);
-      group.add(sphere);
-      
-      // Position the node
-      group.position.set(position.x, position.y, position.z);
-      
-      return group;
-    };
+// Add skill nodes - 3D representations of your key skills
+const createSkillNode = (text: string, position: THREE.Vector3, color: number) => {
+  const group = new THREE.Group();
+  
+  // Create a sphere for the node
+  const geometry = new THREE.SphereGeometry(0.2, 24, 24);
+  const material = new THREE.MeshBasicMaterial({ 
+    color: color,
+    transparent: true,
+    opacity: 0.7
+  });
+  const sphere = new THREE.Mesh(geometry, material);
+  group.add(sphere);
+  
+  // Position the node
+  group.position.set(position.x, position.y, position.z);
+  
+  return group;
+};
     
     // Add skill nodes to represent your main skills
     const skillNodes = [
