@@ -1,12 +1,13 @@
-import { useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import ThreeScene from "../components/ThreeScene";
+import VideoBackground from "../components/VideoBackground";
 
 export default function HomePage() {
-  // Use a single ref for all sections
-
   const containerRef = useRef(null);
+  const [visibleSection, setVisibleSection] = useState("hero");
+  const controls = useAnimation();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -14,25 +15,76 @@ export default function HomePage() {
         const ScrollTrigger = module.ScrollTrigger;
         gsap.registerPlugin(ScrollTrigger);
 
-        const q = gsap.utils.selector(containerRef);
-        gsap.fromTo(
-          q(".experience-item"),
-          { opacity: 0, y: 10 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 80%",
+        // Create scroll-triggered animations
+        const sections = ["about", "experience", "skills", "certifications", "contact"];
+        
+        sections.forEach((section) => {
+          ScrollTrigger.create({
+            trigger: `#${section}-section`,
+            start: "top 80%",
+            onEnter: () => {
+              setVisibleSection(section);
+              gsap.to(`#${section}-section`, {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: "power2.out",
+              });
             },
-          }
-        );
+            onLeaveBack: () => {
+              if (section !== "about") {
+                const prevIndex = sections.indexOf(section) - 1;
+                setVisibleSection(sections[prevIndex]);
+              }
+            }
+          });
+        });
+
+        // Create animations for experience items
+        const experienceItems = document.querySelectorAll(".experience-item");
+        experienceItems.forEach((item, index) => {
+          gsap.fromTo(
+            item,
+            { opacity: 0, x: -50 },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.5,
+              delay: index * 0.1,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: item,
+                start: "top 80%",
+              },
+            }
+          );
+        });
       });
     }
   }, []);
+
+  // Define entrance animations for each section
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.8,
+        when: "beforeChildren",
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.5 }
+    }
+  };
 
   const experience = [
     {
@@ -61,136 +113,358 @@ export default function HomePage() {
     "Google Certified Cloud Engineer",
   ];
 
+  // Custom hook for scroll animations
+  const useScrollAnimation = (threshold = 0.2) => {
+    const [isVisible, setIsVisible] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsVisible(entry.isIntersecting);
+        },
+        { threshold }
+      );
+
+      const currentRef = ref.current;
+      if (currentRef) {
+        observer.observe(currentRef);
+      }
+
+      return () => {
+        if (currentRef) {
+          observer.unobserve(currentRef);
+        }
+      };
+    }, [threshold]);
+
+    return [ref, isVisible];
+  };
+
+  // Use scroll animations for each section
+  const [aboutRef, aboutVisible] = useScrollAnimation();
+  const [experienceRef, experienceVisible] = useScrollAnimation();
+  const [skillsRef, skillsVisible] = useScrollAnimation();
+  const [certRef, certVisible] = useScrollAnimation();
+  const [contactRef, contactVisible] = useScrollAnimation();
+
   return (
     <div ref={containerRef} className="container">
       <ThreeScene />
+      <VideoBackground />
 
-      <motion.header className="hero-section">
-        <motion.img
-          src="/me/images/image.jpg"
-          className="profile-image"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
+      <AnimatePresence>
+        <motion.header 
+          className="hero-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-        />
+        >
+          <motion.div 
+            className="profile-container"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            <motion.img
+              src="/me/images/image.jpg"
+              className="profile-image"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ 
+                opacity: 1, 
+                scale: 1,
+                transition: {
+                  duration: 1,
+                  ease: "easeOut"
+                }
+              }}
+              whileHover={{ 
+                scale: 1.05,
+                boxShadow: "0 0 80px rgba(0, 255, 157, 0.6)",
+                transition: { duration: 0.3 }
+              }}
+            />
+          </motion.div>
 
-        <div className="hero-content">
-          <motion.h1 className="cyber-glow">
-            Sacheth Reddy Pinnapureddy
-          </motion.h1>
-
-          <motion.p className="typewriter">
-            3X AWS, GCP | Ex Amazon | DevOps | SRE
-          </motion.p>
-
-          {/* Add any other header content here */}
-        </div>
-      </motion.header>
-
-      <main>
-        {/* About Section */}
-        <section className="content-section">
-          <h2 className="section-title">About Me</h2>
-          <motion.p className="section-text" whileHover={{ x: 10 }}>
-            Certified AWS Solutions Architect, SysOps Administrator, and Google
-            Cloud Engineer with 5+ years of experience designing and deploying
-            fault-tolerant cloud infrastructure, optimizing CI/CD pipelines, and
-            implementing security best practices.
-          </motion.p>
-        </section>
-
-        {/* Experience Section */}
-        <section className="content-section">
-          <h2 className="section-title">Experience</h2>
-          {experience.map((exp, index) => (
-            <motion.div
-              key={index}
-              className="experience-item"
-              whileHover={{ scale: 1.02 }}
+          <div className="hero-content">
+            <motion.h1 
+              className="cyber-glow"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <h3 className="company-title">{exp.company}</h3>
-              <p className="experience-period">{exp.period}</p>
-              <ul className="experience-list">
-                {exp.points.map((point, i) => (
-                  <motion.li
-                    key={i}
-                    className="experience-point"
-                    whileHover={{ x: 10 }}
-                  >
-                    {point}
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </section>
+              Sacheth Reddy Pinnapureddy
+            </motion.h1>
 
-        {/* Skills Section */}
-        <section className="content-section">
-          <h2 className="section-title">Skills</h2>
-          <div className="skills-grid">
-            {skills.map((skill, index) => (
+            <motion.p 
+              className="typewriter"
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: "100%" }}
+              transition={{ delay: 1, duration: 1 }}
+            >
+              3X AWS, GCP | Ex Amazon | DevOps | SRE
+            </motion.p>
+
+            <motion.div
+              className="hero-cta"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.5, duration: 0.5 }}
+            >
+              <motion.a 
+                href="#about-section" 
+                className="view-work-btn"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                View My Work
+              </motion.a>
+            </motion.div>
+          </div>
+        </motion.header>
+
+        <main>
+          {/* About Section */}
+          <motion.section 
+            id="about-section"
+            ref={aboutRef}
+            className="content-section"
+            initial="hidden"
+            animate={aboutVisible ? "visible" : "hidden"}
+            variants={sectionVariants}
+          >
+            <motion.h2 className="section-title" variants={itemVariants}>
+              About Me
+            </motion.h2>
+            <motion.div 
+              className="about-content"
+              variants={itemVariants}
+            >
+              <motion.p 
+                className="section-text" 
+                whileHover={{ x: 10 }}
+                variants={itemVariants}
+              >
+                Certified AWS Solutions Architect, SysOps Administrator, and Google
+                Cloud Engineer with 5+ years of experience designing and deploying
+                fault-tolerant cloud infrastructure, optimizing CI/CD pipelines, and
+                implementing security best practices.
+              </motion.p>
+              
+              <motion.div 
+                className="tech-logos"
+                variants={itemVariants}
+              >
+                {/* Cloud logos animation here */}
+                <motion.div 
+                  className="logo-container"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                >
+                  {/* Placeholder for cloud service logos */}
+                  <span className="tech-logo aws">AWS</span>
+                  <span className="tech-logo azure">Azure</span>
+                  <span className="tech-logo gcp">GCP</span>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </motion.section>
+
+          {/* Experience Section */}
+          <motion.section 
+            id="experience-section"
+            ref={experienceRef}
+            className="content-section"
+            initial="hidden"
+            animate={experienceVisible ? "visible" : "hidden"}
+            variants={sectionVariants}
+          >
+            <motion.h2 className="section-title" variants={itemVariants}>
+              Experience
+            </motion.h2>
+            
+            {experience.map((exp, index) => (
               <motion.div
                 key={index}
-                className="skill-card"
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.1 }}
+                className="experience-item"
+                variants={itemVariants}
+                whileHover={{ 
+                  scale: 1.02,
+                  boxShadow: "0 10px 30px rgba(0, 255, 157, 0.2)"
+                }}
               >
-                {skill}
+                <motion.h3 
+                  className="company-title"
+                  variants={itemVariants}
+                >
+                  {exp.company}
+                </motion.h3>
+                <motion.p 
+                  className="experience-period"
+                  variants={itemVariants}
+                >
+                  {exp.period}
+                </motion.p>
+                <motion.ul className="experience-list">
+                  {exp.points.map((point, i) => (
+                    <motion.li
+                      key={i}
+                      className="experience-point"
+                      variants={itemVariants}
+                      whileHover={{ 
+                        x: 15,
+                        color: "#00ff9d",
+                        transition: { duration: 0.2 } 
+                      }}
+                    >
+                      {point}
+                    </motion.li>
+                  ))}
+                </motion.ul>
               </motion.div>
             ))}
-          </div>
-        </section>
+          </motion.section>
 
-        {/* Certifications Section */}
-        <section className="content-section">
-          <h2 className="section-title">Certifications</h2>
-          <motion.ul className="certifications-list">
-            {certifications.map((cert, index) => (
-              <motion.li
-                key={index}
-                className="certification-item"
-                whileHover={{ scale: 1.05 }}
-              >
-                {cert}
-              </motion.li>
-            ))}
-          </motion.ul>
-        </section>
-
-        {/* Contact Section */}
-        <section className="content-section">
-          <h2 className="section-title">Contact</h2>
-          <motion.div
-            className="contact-links"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+          {/* Skills Section */}
+          <motion.section 
+            id="skills-section"
+            ref={skillsRef}
+            className="content-section"
+            initial="hidden"
+            animate={skillsVisible ? "visible" : "hidden"}
+            variants={sectionVariants}
           >
-            <a href="mailto:sachethreddy98@gmail.com" className="contact-link">
-              📧 sachethreddy98@gmail.com
-            </a>
-            <a
-              href="https://www.linkedin.com/in/sacheth-reddy/"
-              className="contact-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              🔗 linkedin.com/in/sacheth-reddy
-            </a>
-            <a
-              href="https://github.com/sacheth"
-              className="contact-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              💻 github.com/sacheth
-            </a>
-          </motion.div>
-        </section>
-      </main>
+            <motion.h2 className="section-title" variants={itemVariants}>
+              Skills
+            </motion.h2>
+            <motion.div className="skills-grid">
+              {skills.map((skill, index) => (
+                <motion.div
+                  key={index}
+                  className="skill-card"
+                  variants={itemVariants}
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 0 30px rgba(0, 255, 157, 0.3)"
+                  }}
+                >
+                  <motion.div 
+                    className="skill-icon"
+                    initial={{ rotate: 0 }}
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    {/* Skill icon would go here */}
+                  </motion.div>
+                  <motion.span className="skill-text">
+                    {skill}
+                  </motion.span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.section>
+
+          {/* Certifications Section */}
+          <motion.section 
+            id="certifications-section"
+            ref={certRef}
+            className="content-section"
+            initial="hidden"
+            animate={certVisible ? "visible" : "hidden"}
+            variants={sectionVariants}
+          >
+            <motion.h2 className="section-title" variants={itemVariants}>
+              Certifications
+            </motion.h2>
+            <motion.div className="certifications-list">
+              {certifications.map((cert, index) => (
+                <motion.div
+                  key={index}
+                  className="certification-item"
+                  variants={itemVariants}
+                  whileHover={{ 
+                    scale: 1.05,
+                    rotateY: 10,
+                    rotateX: 5,
+                    z: 20,
+                    boxShadow: "0 10px 30px rgba(0, 102, 255, 0.3)"
+                  }}
+                >
+                  <motion.div className="cert-content">
+                    <motion.div 
+                      className="cert-icon"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    >
+                      {/* Certificate icon would go here */}
+                    </motion.div>
+                    <motion.span className="cert-name">
+                      {cert}
+                    </motion.span>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.section>
+
+          {/* Contact Section */}
+          <motion.section 
+            id="contact-section"
+            ref={contactRef}
+            className="content-section"
+            initial="hidden"
+            animate={contactVisible ? "visible" : "hidden"}
+            variants={sectionVariants}
+          >
+            <motion.h2 className="section-title" variants={itemVariants}>
+              Contact
+            </motion.h2>
+            <motion.div className="contact-links">
+              <motion.a 
+                href="mailto:sachethreddy98@gmail.com" 
+                className="contact-link"
+                variants={itemVariants}
+                whileHover={{ 
+                  x: 15,
+                  backgroundColor: "rgba(0, 255, 157, 0.3)",
+                  transition: { duration: 0.2 }
+                }}
+              >
+                📧 sachethreddy98@gmail.com
+              </motion.a>
+              <motion.a
+                href="https://www.linkedin.com/in/sacheth-reddy/"
+                className="contact-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                variants={itemVariants}
+                whileHover={{ 
+                  x: 15,
+                  backgroundColor: "rgba(0, 255, 157, 0.3)",
+                  transition: { duration: 0.2 }
+                }}
+              >
+                🔗 linkedin.com/in/sacheth-reddy
+              </motion.a>
+              <motion.a
+                href="https://github.com/sacheth"
+                className="contact-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                variants={itemVariants}
+                whileHover={{ 
+                  x: 15,
+                  backgroundColor: "rgba(0, 255, 157, 0.3)",
+                  transition: { duration: 0.2 }
+                }}
+              >
+                💻 github.com/sacheth
+              </motion.a>
+            </motion.div>
+          </motion.section>
+        </main>
+      </AnimatePresence>
     </div>
   );
 }
