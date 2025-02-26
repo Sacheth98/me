@@ -8,7 +8,6 @@ export default function HomePage() {
 
   const containerRef = useRef(null);
 
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       import("gsap/ScrollTrigger").then((module) => {
@@ -192,6 +191,6 @@ export default function HomePage() {
           </motion.div>
         </section>
       </main>
-    </div> 
+    </div>
   );
 }
