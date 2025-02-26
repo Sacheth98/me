@@ -1,17 +1,26 @@
 import React, { useRef, useEffect } from 'react';
 
 const VideoBackground = () => {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   
   useEffect(() => {
+    // Check if canvasRef.current exists before proceeding
+    if (!canvasRef.current) return;
+    
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    
+    // Check if ctx is not null before proceeding
+    if (!ctx) return;
+    
+    let animationFrameId: number;
     
     // Set canvas dimensions
     const setCanvasDimensions = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
     };
     
     setCanvasDimensions();
@@ -19,7 +28,14 @@ const VideoBackground = () => {
     
     // Matrix rain effect
     class Symbol {
-      constructor(x, y, fontSize, canvasHeight) {
+      characters: string;
+      x: number;
+      y: number;
+      fontSize: number;
+      text: string;
+      canvasHeight: number;
+      
+      constructor(x: number, y: number, fontSize: number, canvasHeight: number) {
         this.characters = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ{}[]<>/*-+?!@#$%^&()=';
         this.x = x;
         this.y = y;
@@ -33,7 +49,7 @@ const VideoBackground = () => {
         this.text = this.characters.charAt(Math.floor(Math.random() * this.characters.length));
       }
       
-      draw(context) {
+      draw(context: CanvasRenderingContext2D) {
         // Gradient from primary to secondary color
         const gradient = context.createLinearGradient(0, this.y - this.fontSize, 0, this.y);
         gradient.addColorStop(0, 'rgba(0, 255, 157, 1)');
@@ -53,7 +69,13 @@ const VideoBackground = () => {
     }
     
     class Matrix {
-      constructor(canvas, context) {
+      canvas: HTMLCanvasElement;
+      context: CanvasRenderingContext2D;
+      fontSize: number;
+      columns: number;
+      symbols: Symbol[];
+      
+      constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         this.canvas = canvas;
         this.context = context;
         this.fontSize = 16;
@@ -73,11 +95,11 @@ const VideoBackground = () => {
         }
       }
       
-      randomIntFromRange(min, max) {
+      randomIntFromRange(min: number, max: number) {
         return Math.floor(Math.random() * (max - min + 1) + min);
       }
       
-      resize(width, height) {
+      resize(width: number, height: number) {
         this.canvas.width = width;
         this.canvas.height = height;
         this.columns = this.canvas.width / this.fontSize;
