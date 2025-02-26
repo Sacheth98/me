@@ -101,10 +101,11 @@ const createSkillNode = (text: string, position: THREE.Vector3, color: number) =
     const mouse = { x: 0, y: 0 };
     
     // Track mouse movement
-    const onMouseMove = (event) => {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
+// Track mouse movement
+const onMouseMove = (event: MouseEvent) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+};
     
     window.addEventListener('mousemove', onMouseMove);
     
