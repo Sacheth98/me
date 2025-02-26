@@ -1,8 +1,35 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, RefObject } from "react";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import ThreeScene from "../components/ThreeScene";
 import VideoBackground from "../components/VideoBackground";
+
+// Updated custom hook with explicit typing for the ref
+function useScrollAnimation(threshold: number = 0.2): [RefObject<HTMLElement>, boolean] {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [threshold]);
+
+  return [ref, isVisible];
+}
 
 export default function HomePage() {
   const containerRef = useRef(null);
@@ -113,35 +140,7 @@ export default function HomePage() {
     "Google Certified Cloud Engineer",
   ];
 
-  // Custom hook for scroll animations
-  const useScrollAnimation = (threshold = 0.2) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const ref = useRef(null);
-
-    useEffect(() => {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          setIsVisible(entry.isIntersecting);
-        },
-        { threshold }
-      );
-
-      const currentRef = ref.current;
-      if (currentRef) {
-        observer.observe(currentRef);
-      }
-
-      return () => {
-        if (currentRef) {
-          observer.unobserve(currentRef);
-        }
-      };
-    }, [threshold]);
-
-    return [ref, isVisible];
-  };
-
-  // Use scroll animations for each section
+  // Use scroll animations for each section with the updated hook
   const [aboutRef, aboutVisible] = useScrollAnimation();
   const [experienceRef, experienceVisible] = useScrollAnimation();
   const [skillsRef, skillsVisible] = useScrollAnimation();
